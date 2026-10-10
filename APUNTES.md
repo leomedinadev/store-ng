@@ -1,4 +1,4 @@
-## Guides
+## Configuracion de  ESLint y Prettier
 
 Limpieza de imports sin usar
 
@@ -106,3 +106,147 @@ module.exports = tseslint.config(
 );
 
 ```
+
+
+## Configuracion de ambientes
+
+Para habilitar los ambientes en Angular, debemos ejecutar el siguiente comando:
+
+```bash
+ng generate environment
+```
+
+## Instalacion Tailwind
+
+
+```bash
+npm install -D tailwindcss@3 postcss autoprefixer
+npx tailwindcss init
+```
+
+tailwindcss.config.js
+```code 
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/**/*.{html,ts}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+style.scss
+```bash
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+
+
+## Buenas practicas con variables locales en Angular
+
+Aunque se permite manejar variables en el html, es recomendable no hacerlo.
+Es recomendado utilizar variables locales cuando se necesita acceder a multiples veces al valor de un signal.
+
+  ```code
+@if (product()) {
+  @let data = product()
+  <div>
+    <h1>{{data.title}}</h1>
+    <p>{{data.description}}</p>
+    <span>{{data.price}}</span>
+  </div>
+}
+```
+
+
+## Migración a Input Signals
+La reactividad en Angular ha evolucionado significativamente con la introducción de los signals, ofreciendo un rendimiento mejorado y una reactividad más granular. Esta nueva forma de manejar los inputs no solo optimiza el tiempo de ejecución de nuestras aplicaciones, sino que también proporciona una experiencia de desarrollo más intuitiva. Veamos cómo podemos migrar nuestros proyectos existentes a este nuevo modelo de reactividad y aprovechar todas sus ventajas.
+
+
+Para realizar esta migración, ejecuta el siguiente comando en tu terminal:
+```bash
+ng generate @angular/core:signal-input-migration
+```
+Nota: Despues del comando nos preguntara por algun directiorio, podemos poner . para migrar todo el proyecto o parcialmente como puede ser algun modulo => ./src/module/products
+La migración transforma código como este:
+```code 
+@Input() name: string | undefined;
+
+getNameLength(): number {
+  return this.name ? this.name.length : -1;
+}
+```
+
+En algo similar a esto:
+```code 
+@Input({required: true}) name = input<string>();
+
+getNameLength(): number {
+  const name = this.name();
+  return name ? name.length : -1;
+}
+```
+
+## Migracion de Outputs: De Decoradores a Funciones
+
+```bash
+ng generate @angular/core:output-migration
+```
+
+
+## Server Side Rendering
+
+Para aprovechar al máximo las ventajas del Server Side Rendering y otras funcionalidades avanzadas, Angular ha desarrollado nuevos builders que ofrecen diferentes opciones según las necesidades de cada proyecto. Estos builders son fundamentales para determinar cómo se construirá nuestra aplicación.
+
+La documentación oficial de Angular CLI nos presenta cuatro builders principales:
+
+- Application: Es el builder más recomendado y moderno. Permite construir tanto aplicaciones Client Side como Server Side Rendering. Este builder incorpora las innovaciones más recientes en cuanto a SSR y detección de cambios.
+
+- Browser-esbuild: Un builder que genera aplicaciones Client Side, pero no permite implementar Server Side Rendering.
+
+- Browser: Proporciona retrocompatibilidad, especialmente si necesitas mantener integraciones con Webpack.
+
+- Server: Específico para configuraciones de Server Side Rendering.
+
+El builder "application" utiliza esbuild, un transpilador mucho más rápido que Webpack, lo que resulta en tiempos de compilación significativamente reducidos, especialmente en proyectos grandes.
+
+
+La migración hacia el builder "application" se puede realizar de forma automática con un simple comando:
+```bash
+ng update @angular/cli --name use-application-builder
+```
+
+
+Las principales ventajas de implementar SSR son:
+
+Mejor rendimiento: La carga inicial es más rápida porque el usuario recibe contenido ya renderizado.
+Optimización para SEO: Los motores de búsqueda pueden indexar correctamente el contenido de tu sitio.
+Mejor experiencia en dispositivos con recursos limitados: Al reducir la carga de procesamiento en el cliente.
+
+Habilitar SSR en Angular
+```bash
+ng add @angular/ssr
+```
+
+
+## The Open Graph
+
+El Open Graph Protocol es un conjunto de metatags estandarizados que todos los navegadores y plataformas sociales acordaron utilizar para generar previsualizaciones de enlaces. Estos metatags tienen el prefijo "og:" y son fundamentales para crear cards atractivas al compartir contenido.
+
+Propiedades mínimas requeridas para OpenGraph
+Para generar una previsualización adecuada, necesitamos al menos estas propiedades:
+
+- og:title - El título del contenido
+- og:description - Una descripción breve
+- og:image - La URL de la imagen a mostrar
+- og:url - La URL canónica del contenido
+- og:type - El tipo de contenido (website, product, article, etc.)
+
+
+https://ogp.me/
+
